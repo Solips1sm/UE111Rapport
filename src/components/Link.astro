@@ -1,27 +1,51 @@
 ---
 import { cn } from '@/lib/utils'
+import type { HTMLAttributes } from 'astro/types'
 
-interface Props {
-  href: string
-  external?: boolean
-  class?: string
-  underline?: boolean
-  [key: string]: any
+type Props = HTMLAttributes<'a'>
+
+const { href: originalHref, class: className, ...props } = Astro.props
+// Astro.currentLocale is only available when using i18n routing.
+// If not using i18n, it might be undefined. This line is not directly used in the logic below.
+// const { currentLocale } = Astro; 
+const base = import.meta.env.BASE_URL; // This will be '/ue111rapport/' or '/'
+
+let processedHref = originalHref;
+
+if (typeof originalHref === 'string' && originalHref.startsWith('/') && !originalHref.startsWith('//')) {
+  // This is a root-relative path, e.g., "/about" or "/blog/my-post".
+  // It should be prefixed with the base path, unless it already starts with it.
+  // import.meta.env.BASE_URL includes a trailing slash if not "/" (e.g., "/subpath/"), or is "/" if no base is set.
+
+  if (base !== '/' && !originalHref.startsWith(base)) {
+    // Prepend base if it's not already there and base is not just "/".
+    // Example: base="/ue111rapport/", originalHref="/blog"
+    // We want "/ue111rapport/blog"
+    const basePathNormalized = base.endsWith('/') ? base.slice(0, -1) : base; // -> "/ue111rapport" (removes trailing slash for joining)
+    processedHref = basePathNormalized + originalHref; // -> "/ue111rapport" + "/blog" = "/ue111rapport/blog"
+  }
+  // If base is "/", processedHref remains originalHref (e.g., "/blog").
+  // If originalHref already starts with base (e.g., "/ue111rapport/blog"), it's also not modified by this block.
 }
 
-const { href, external, class: className, underline, ...rest } = Astro.props
+// Determine if the link is active.
+// Astro.url.pathname already includes the base path if one is set.
+// So, processedHref (which now also includes the base path) should be compared against Astro.url.pathname.
+const isActive = processedHref === Astro.url.pathname || (Astro.url.pathname.endsWith('/') && processedHref === Astro.url.pathname.slice(0, -1));
 ---
 
 <a
-  href={href}
-  target={external ? '_blank' : '_self'}
+  href={processedHref}
   class={cn(
-    'inline-block transition-colors duration-300 ease-in-out',
-    underline &&
-      'underline decoration-muted-foreground underline-offset-[3px] hover:decoration-foreground',
-    className,
+    'inline-block duration-300 ease-in-out', // Default class from original component
+    {
+      // Styling for active link
+      'text-foreground/80 underline decoration-foreground/50 underline-offset-[3px]': isActive,
+    },
+    className // Allows overriding/extending classes
   )}
-  {...rest}
+  aria-current={isActive ? 'page' : false}
+  {...props}
 >
   <slot />
 </a>
