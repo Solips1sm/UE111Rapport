@@ -1,0 +1,57 @@
+---
+import BlogCard from '@/components/BlogCard.astro'
+import Link from '@/components/Link.astro'
+import PageHead from '@/components/PageHead.astro'
+import { buttonVariants } from '@/components/ui/button'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getRecentPosts } from '@/lib/data-utils'
+
+const blog = await getRecentPosts(SITE.featuredPostCount)
+---
+
+<Layout>
+  <PageHead slot="head" title="Home" />
+  <section>
+    <div class="rounded-lg border">
+      <div class="flex flex-col p-4 gap-1">
+        <h1 class="text-2xl font-medium">é·ton·ne·ment</h1>
+        <p class="text-muted-foreground text-xs italic">
+          <span class="font-medium">n. m.</span> [etɔnmɑ̃]
+        </p>
+        <p class="text-muted-foreground text-xs">
+          <span class="font-semibold">Forte surprise</span> provoquée par quelque chose d'inattendu ou d'extraordinaire. 
+        </p>
+        <p class="text-muted-foreground text-xs">
+          <span class="font-semibold">Rem.</span> Peut être teintée de frayeur (<span class="italic">pétrifié d'étonnement</span>) ou d'admiration (<span class="italic">étonnement et émerveillement</span>).
+        </p>
+        <p class="text-muted-foreground text-[10px]">
+          <span class="font-semibold">Étymologie :</span> radical <span class="italic">étonner</span> + suffixe <span class="italic">-ment</span>.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <ul class="flex flex-col gap-y-4">
+      {
+        blog.map((post) => (
+          <li>
+            <BlogCard entry={post} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all posts <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
+</Layout>

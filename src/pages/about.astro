@@ -1,0 +1,38 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <PageHead slot="head" title="Anistratenco Serghei – Rapport d'étonnement" />
+  <Breadcrumbs items={[{ label: "Rapport d'étonnement", icon: 'lucide:info' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <h1 class="mb-4">Rapport d'étonnement</h1>
+        <p class="mb-4">
+          Bienvenue sur le site personnel d'Anistratenco Serghei, étudiant à LP1 MIAW, Université de Limoges. Ce site présente un rapport d'étonnement structuré, ainsi que des informations de contact et un portfolio.
+        </p>
+      </div>
+      <!-- Widget 1: Progress Bar (Plan Avancement) -->
+      <div class="mb-8">
+        <h3 class="text-lg font-medium mb-2">Avancement du rapport</h3>
+        <div class="w-full bg-muted rounded-full h-3">
+          <div class="bg-primary h-3 rounded-full" style="width: 99%"></div>
+        </div>
+        <p class="text-sm text-muted-foreground mt-1">99% du plan conseillé complété</p>
+      </div>
+
+      <!-- Widget 2: Quote Carousel (Surprises & Réflexions) -->
+      <div class="mb-8">
+        <h3 class="text-lg font-medium mb-2">Réflexions & Surprises</h3>
+        <div class="bg-secondary p-4 rounded-xl shadow-sm">
+          <blockquote class="italic">« La diversité des métiers du numérique m'a surpris dès les premiers jours. »</blockquote>
+          <blockquote class="italic mt-2">« L'apprentissage des outils techniques s'accompagne d'une découverte de soi. »</blockquote>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
