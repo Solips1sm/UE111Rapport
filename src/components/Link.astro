@@ -2,12 +2,12 @@
 import { cn } from '@/lib/utils'
 import type { HTMLAttributes } from 'astro/types'
 
-type Props = HTMLAttributes<'a'>
+interface Props extends HTMLAttributes<'a'> {
+  external?: boolean
+  underline?: boolean
+}
 
-const { href: originalHref, class: className, ...props } = Astro.props
-// Astro.currentLocale is only available when using i18n routing.
-// If not using i18n, it might be undefined. This line is not directly used in the logic below.
-// const { currentLocale } = Astro; 
+const { href: originalHref, class: className, external, underline, ...props } = Astro.props
 const base = import.meta.env.BASE_URL; // This will be '/ue111rapport/' or '/'
 
 let processedHref = originalHref;
@@ -32,20 +32,27 @@ if (typeof originalHref === 'string' && originalHref.startsWith('/') && !origina
 // Astro.url.pathname already includes the base path if one is set.
 // So, processedHref (which now also includes the base path) should be compared against Astro.url.pathname.
 const isActive = processedHref === Astro.url.pathname || (Astro.url.pathname.endsWith('/') && processedHref === Astro.url.pathname.slice(0, -1));
----
 
-<a
-  href={processedHref}
-  class={cn(
+const linkAttributes: Record<string, any> = {
+  href: processedHref,
+  class: cn(
     'inline-block duration-300 ease-in-out', // Default class from original component
     {
       // Styling for active link
-      'text-foreground/80 underline decoration-foreground/50 underline-offset-[3px]': isActive,
+      'text-foreground/80 underline decoration-foreground/50 underline-offset-[3px]': isActive || underline,
     },
     className // Allows overriding/extending classes
-  )}
-  aria-current={isActive ? 'page' : false}
-  {...props}
->
+  ),
+  'aria-current': isActive ? 'page' : false,
+  ...props,
+};
+
+if (external) {
+  linkAttributes.target = '_blank';
+  linkAttributes.rel = 'noopener noreferrer';
+}
+---
+
+<a {...linkAttributes}>
   <slot />
 </a>
