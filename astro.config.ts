@@ -22,7 +22,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   site: 'https://anistratenco1.hosting.unilim.fr/ue111rapport',
-  //base: '/ue111rapport',
+  base: '/ue111rapport',
   integrations: [
     expressiveCode({
       themes: ['github-light', 'github-dark'],
